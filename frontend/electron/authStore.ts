@@ -5,15 +5,6 @@ const ACCOUNT_NAME = "auth-token";
 const REFRESH_ACCOUNT_NAME = "refresh-auth-token";
 
 
-interface AuthStore {
-    saveToken(token: string): Promise<void>;
-    saveRefreshToken(token: string): Promise<void>;
-    getToken(): Promise<string | null>;
-    getRefreshToken(): Promise<string | null>;
-    removeToken(): Promise<void>;
-}
-
-
 export const saveToken = async function(token: string): Promise<void> {
     console.log("Token saved!")
     await keytar.setPassword(SERVICE_NAME, ACCOUNT_NAME, token);

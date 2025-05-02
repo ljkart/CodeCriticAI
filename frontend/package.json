@@ -11,7 +11,8 @@
     "build": "npm run transpile:electron && vite build",
     "dist:mac": "npm run transpile:electron && npm run build && electron-builder --mac --arm64",
     "dist:win": "npm run transpile:electron && npm run build && electron-builder --win --x64",
-    "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64"
+    "dist:linux": "npm run transpile:electron && npm run build && electron-builder --linux --x64",
+    "lint": "eslint src electron --ext .ts,.tsx,.js,.jsx"
   },
   "dependencies": {
     "@types/mime-types": "^2.1.4",

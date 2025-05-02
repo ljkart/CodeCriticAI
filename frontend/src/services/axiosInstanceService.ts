@@ -1,9 +1,10 @@
 import axios from "axios";
 
 let isRefreshing = false;
-let failedQueue: any[] = [];
+type FailedQueueItem = { resolve: (token: string | null) => void; reject: (error: unknown) => void };
+let failedQueue: FailedQueueItem[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach(prom => {
     if (error) {
       prom.reject(error);
@@ -47,10 +48,15 @@ api.interceptors.request.use(
   
   api.interceptors.response.use(
     (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
+    async (error: unknown) => {
+      const originalRequest = error as any;
   
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      if (error instanceof Error && error.message === "Network Error") {
+        processQueue(error, null);
+        return Promise.reject(error);
+      }
+  
+      if (error instanceof Error && error.message === "Request failed with status code 401") {
         originalRequest._retry = true;
   
         if (isRefreshing) {

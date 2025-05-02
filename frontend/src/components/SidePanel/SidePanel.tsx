@@ -1,5 +1,5 @@
 import "./SidePanel.css";
-import { FaChevronRight, FaChevronDown, FaFile, FaTrash } from "react-icons/fa";
+import { FaChevronRight, FaChevronDown, FaTrash } from "react-icons/fa";
 
 interface Version {
   id: number;

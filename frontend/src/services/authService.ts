@@ -27,14 +27,16 @@ export const loginUser = async (credentials: LoginCredentials): Promise<AuthResp
         await window.electronAPI.saveToken(response.data.token);
 
         return response.data;
-    } catch (error: any) {
-        if (error.response?.data?.message){
-            throw new Error(error.response?.data?.message);
+    } catch (error: unknown) {
+        if (typeof error === 'object' && error && 'response' in error) {
+            const err = error as { response?: { data?: { message?: string; error?: string } } };
+            if (err.response?.data?.message) {
+                throw new Error(err.response.data.message);
+            } else if (err.response?.data?.error) {
+                throw new Error(err.response.data.error);
+            }
         }
-        else if (error.response?.data?.error){
-            throw new Error(error.response?.data?.error);
-        }
-        throw new Error("Unexpected error, Login failed ")
+        throw new Error("Unexpected error, Login failed ");
     }
 }
 
@@ -48,9 +50,13 @@ export const registerUser = async (credentials: LoginCredentials): Promise<AuthR
         console.log(response)
         return response.data;
 
-    } catch (error: any) {
-        const message = error.response?.data?.message || error.response?.data?.error
-        throw new Error(message)
+    } catch (error: unknown) {
+        if (typeof error === 'object' && error && 'response' in error) {
+            const err = error as { response?: { data?: { message?: string; error?: string } } };
+            const message = err.response?.data?.message || err.response?.data?.error;
+            throw new Error(message || 'Registration failed');
+        }
+        throw new Error('Registration failed');
     }
 }
 

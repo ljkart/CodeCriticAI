@@ -5,7 +5,6 @@ import {
   vscDarkPlus,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getReviewByFilenameAndVersion } from "@/services/reviewService";
-import { dracula, github, githubGist, monokai, solarizedDark, vs } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 interface ReviewContentProps {
   selectedFile: string | null;

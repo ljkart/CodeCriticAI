@@ -26,7 +26,6 @@ const BottomPanel = ({
   setToastData,
 }: BottomPanelProps) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleReview = async () => {
     if (!filePath) {
@@ -62,17 +61,8 @@ const BottomPanel = ({
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    const droppedFile = e.dataTransfer.files[0] as any;
-    console.log(typeof droppedFile);
-    console.log(droppedFile);
-    console.log(droppedFile.path);
-    // const filePath = (droppedFile as any).path;
-    // console.log("Dropped file");
-    // console.log(droppedFile.path);
-    // if (droppedFile?.path) {
-    //   console.log(droppedFile.path);
-    //   setSelectedFile(droppedFile.path);
-    // }
+    const droppedFile: File = e.dataTransfer.files[0];
+    // You can use droppedFile if needed
   };
 
   useEffect(() => {
@@ -83,7 +73,7 @@ const BottomPanel = ({
     <div>
       <div
         className={`bottom-panel ${isDragging}? 'dragging' : '' ${
-          filePath || selectedFile ? "has-file" : ""
+          filePath ? "has-file" : ""
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}

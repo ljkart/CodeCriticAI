@@ -12,9 +12,12 @@ export const getFileHistories = async () => {
         console.log(reviews)
         return reviews.data
 
-    } catch (error: any) {
-        const message = error.response?.data?.message || error.response?.data?.error;
-        throw new Error(message);
+    } catch (error: unknown) {
+        if (typeof error === 'object' && error && 'response' in error) {
+            const err = error as { response?: { data?: { error?: string } } };
+            throw new Error(err.response?.data?.error || "Failed to fetch file histories");
+        }
+        throw new Error("Failed to fetch file histories");
     }
 
 }

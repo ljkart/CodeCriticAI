@@ -8,9 +8,8 @@ import {
   getFileHistories,
   removeReviewByFilenameVersion,
 } from "@/services/reviewService";
-import ReviewContent from "@/components/ReviewContent/ReviewContent";
-import ErrorBoundary from "@/components/ErrorBoundary/ErrorBoundary";
 import "./Dashboard.css";
+import ErrorBoundary from "@/components/ErrorBoundary/ErrorBoundary";
 
 interface ReviewFile {
   filename: string;
@@ -36,10 +35,9 @@ const BottomPanelLazy = lazy(() => import("@/components/BottomPanel/BottomPanel"
  * Main dashboard page for managing and viewing code reviews.
  */
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState<"reviews" | "refactor">("reviews");
+  const [activeTab] = useState<"reviews" | "refactor">("reviews");
   const [historyVisible, setHistoryVisible] = useState(true);
   const [filePath, setFilePath] = useState("");
-  const [dropdownVisible, setDropdownVisible] = useState(false);
   const [files, setFiles] = useState<ReviewFile[]>([]);
   const [selectedFile, setSelectedFile] = useState("");
   const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
@@ -77,21 +75,6 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setDropdownVisible(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -102,9 +85,6 @@ const Dashboard = () => {
       }
     }
   }, []);
-
-  // handle when refresh requested
-  const handleReviewFinished = (reviewed_file: string) => {};
 
   // Fetch initial data
   const fetchFiles = async (fileToBeSelectedData: FileData | null = null) => {
@@ -134,7 +114,7 @@ const Dashboard = () => {
 
       // Set initial selection (either from param or first file)
       if (filesArray.length > 0) {
-        let firstFile = filesArray[0];
+        const firstFile = filesArray[0];
         if (fileToBeSelectedData) {
           setSelectedFile(fileToBeSelectedData.filename);
           setSelectedVersion(fileToBeSelectedData.version);
@@ -148,8 +128,8 @@ const Dashboard = () => {
         setSelectedFile("");
         setSelectedVersion(null);
       }
-    } catch (error) {
-      console.error("Error fetching files:", error);
+    } catch {
+      // Error fetching files
     }
   };
 

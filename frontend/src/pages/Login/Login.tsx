@@ -21,8 +21,12 @@ const Login: React.FC = () => {
       localStorage.setItem("user", JSON.stringify(result.user));
       // reroute to dashboard
       navigate("/dashboard");
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      if (typeof error === 'object' && error && 'message' in error) {
+        setError((error as { message: string }).message);
+      } else {
+        setError('Login failed');
+      }
     }
   };
 
@@ -36,7 +40,7 @@ const Login: React.FC = () => {
       }
     };
     autoLogin();
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="login-container">

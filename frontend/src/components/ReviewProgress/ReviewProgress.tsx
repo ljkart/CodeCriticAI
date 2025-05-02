@@ -4,9 +4,7 @@ import "./ReviewProgress.css";
 /**
  * Overlay spinner shown while a code review is in progress.
  */
-interface ReviewProgressProps {}
-
-const ReviewProgress: React.FC<ReviewProgressProps> = () => {
+const ReviewProgress: React.FC = () => {
   return (
     <div className="progress-screen-overlay">
       <div className="progress-screen-container">

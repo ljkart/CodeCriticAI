@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "@/services/authService";
 import "./Register.css";
+import { registerUser } from "@/services/authService";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -10,7 +9,6 @@ const Register = () => {
   const [passwordMatch, setPasswordMatch] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isFormValid, setIsFormValid] = useState(false);
   const [formTouched, setFormTouched] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -19,12 +17,10 @@ const Register = () => {
     setFormTouched(false);
 
     if (!passwordMatch) {
-      setIsFormValid(false);
       setErrorMessage("password do not match");
     }
 
     if (!username || !password || !confirmPassword) {
-      setIsFormValid(false);
       setErrorMessage("Need to fill all details");
     }
 
@@ -33,8 +29,12 @@ const Register = () => {
       setSuccessMessage("Registeration Successful");
       console.log("successfully registered");
       console.log(result);
-    } catch (error: any) {
-      setErrorMessage(error.message);
+    } catch (error: unknown) {
+      if (typeof error === 'object' && error && 'message' in error) {
+        setErrorMessage((error as { message: string }).message);
+      } else {
+        setErrorMessage('Registration failed');
+      }
     }
   };
   useEffect(() => {

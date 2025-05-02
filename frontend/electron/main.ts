@@ -4,6 +4,7 @@ import path from "path";
 import {getToken, saveToken, deleteToken} from "./authStore"
 import fs from "fs/promises";
 import mime from "mime-types";
+import type { IpcMainInvokeEvent } from 'electron';
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ function createWindow() {
     mainWindow.setTitle(appTitle);
 
     if (isDev) {
-        let reactAppUrl = process.env.REACT_APP_URL || "http://localhost:5173"
+        const reactAppUrl = process.env.REACT_APP_URL || "http://localhost:5173";
         mainWindow.loadURL(reactAppUrl);
         mainWindow.webContents.openDevTools();
     } else {    
@@ -64,7 +65,7 @@ app.on('activate', () => {
 ipcMain.handle("auth:get-token", getToken);
 
 
-ipcMain.handle("auth:save-token", (_: any, token:string) => saveToken(token));
+ipcMain.handle("auth:save-token", (_: IpcMainInvokeEvent, token: string) => saveToken(token));
 
 
 ipcMain.handle("auth:delete-token", deleteToken)

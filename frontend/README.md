@@ -1,54 +1,87 @@
-# React + TypeScript + Vite
+# CodeCriticAI-Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern Electron + React + Vite desktop app for agentic code review tool.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js (v18 or higher recommended)
+- npm (v9 or higher recommended)
+- (Optional) [Electron](https://www.electronjs.org/) globally for advanced packaging
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Clone the repository:**
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+   ```bash
+   git clone <your-repo-url>
+   cd frontend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+## Development
+
+To run the app in development mode (with hot reload for React and Electron):
+
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- This will start both the Vite dev server (for React) and Electron in development mode.
+- The app window should open automatically. If not, run:
+  ```bash
+  npm run dev:electron
+  ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Production Build
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+To build the React app and transpile the Electron main process:
+
+```bash
+npm run build
 ```
+
+- The output will be in the `dist/` directory.
+
+## Packaging the Electron App
+
+To create a distributable package for your OS:
+
+- **For Mac:**
+  ```bash
+  npm run dist:mac
+  ```
+- **For Windows:**
+  ```bash
+  npm run dist:win
+  ```
+- **For Linux:**
+  ```bash
+  npm run dist:linux
+  ```
+
+The packaged app will be in the `dist/` or `release/` directory.
+
+## Environment Variables
+
+Create a `.env` file in the `frontend/` directory if you need to override defaults (e.g., API endpoints).
+
+## Troubleshooting
+
+- If you see errors about missing dependencies, run `npm install` again.
+- If Electron does not launch, ensure you are using a compatible Node.js version.
+- For authentication issues, ensure your backend is running and accessible at the configured API endpoint.
+
+## Project Structure
+
+- `src/` - React components, pages, and services
+- `electron/` - Electron main process and preload scripts
+- `public/` - Static assets
+- `dist/` - Production build output
+
+## License
+
+MIT
