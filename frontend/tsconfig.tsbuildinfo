@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/electron.d.ts","./src/main.tsx","./src/vite-env.d.ts","./src/pages/dashboard/dashboard.tsx","./src/pages/login/login.tsx","./src/pages/register/register.tsx","./src/services/apiservice.ts","./src/services/authservice.ts","./src/types/electron-api.d.ts"],"version":"5.7.3"}

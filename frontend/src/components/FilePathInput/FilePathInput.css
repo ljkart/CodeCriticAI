@@ -1,0 +1,45 @@
+.file-path-input {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 10px;
+    height: 100%;
+    align-items: stretch;
+    /* Stretch inner input vertically */
+    flex: 1;
+    /* Take full available width */
+    height: 100%;
+    /* Match bottom-panel height */
+
+}
+
+.file-path-input .file-tag {
+    background-color: #1f1f1f;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #333;
+}
+
+.file-path-input input {
+    flex: 1;
+    background-color: #111;
+    color: #ccc;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 6px 12px;
+    /* height: 3vh; */
+}
+
+.file-path-input button {
+    background-color: #333;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.file-path-input button:hover {
+    background-color: #444;
+}
