@@ -20,9 +20,7 @@ const Toast: React.FC<ToastProps> = ({ toastData, onClose }) => {
   }, [onClose]);
 
   useEffect(() => {
-    console.log(toastData);
     const dd = document.getElementsByClassName("toast");
-    console.log(dd);
   }, [toastData]);
 
   return <div className={`toast ${toastData.type} `}>{toastData.message}</div>;

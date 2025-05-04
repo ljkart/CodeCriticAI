@@ -48,17 +48,13 @@ api.interceptors.request.use(
   
   api.interceptors.response.use(
     (response) => response,
-    async (error: unknown) => {
-      const originalRequest = error as any;
-  
-      if (error instanceof Error && error.message === "Network Error") {
-        processQueue(error, null);
-        return Promise.reject(error);
-      }
-  
-      if (error instanceof Error && error.message === "Request failed with status code 401") {
+    async (error: any) => {
+      const originalRequest = error.config || error;
+
+      // Handle both 401 and 422 as possible auth/token errors
+      if ((error.response?.status === 401 || error.response?.status === 422) && !originalRequest._retry) {
         originalRequest._retry = true;
-  
+
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
@@ -67,32 +63,26 @@ api.interceptors.request.use(
             return api(originalRequest);
           });
         }
-  
+
         isRefreshing = true;
-  
+
         try {
           const refreshToken = await window.electronAPI.getRefreshToken();
-  
           const response = await api.post("/auth/refresh", {}, {
             headers: { Authorization: `Bearer ${refreshToken}` },
           });
-  
           const newToken = response.data?.token;
-  
           if (!newToken) {
             throw new Error("No token received on refresh.");
           }
-  
           await window.electronAPI.saveToken(newToken);
-  
           api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
-  
           processQueue(null, newToken);
           return api(originalRequest);
         } catch (err) {
           processQueue(err, null);
-          localStorage.removeItem("token");
+          localStorage.removeItem("user");
           await window.electronAPI.deleteToken(); // Clean up secure token
           window.location.href = "/login";        // Redirect to login
           return Promise.reject(err);
@@ -100,7 +90,7 @@ api.interceptors.request.use(
           isRefreshing = false;
         }
       }
-  
+
       return Promise.reject(error);
     }
   );

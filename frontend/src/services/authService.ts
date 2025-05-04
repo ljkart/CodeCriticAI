@@ -1,6 +1,5 @@
 import api from "./axiosInstanceService";
-
-
+import { jwtDecode } from "jwt-decode";
 export interface LoginCredentials {
     username: string;
     password: string;
@@ -9,12 +8,25 @@ export interface LoginCredentials {
 
 export interface AuthResponse {
     token: string;
+    refreshToken?: string;
     user: {
         id: string;
         name: string;
     }
 }
 
+function isTokenExpired(token: string | null): boolean {
+    if (!token) return true;
+    try {
+        // For CommonJS interop, jwt_decode may be a module with a default export
+        const decode = typeof jwtDecode === 'function' ? jwtDecode : (jwtDecode as any).default;
+        const { exp } = decode(token) as { exp: number };
+        if (!exp) return true;
+        return Date.now() >= exp * 1000;
+    } catch {
+        return true;
+    }
+}
 
 export const loginUser = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     
@@ -25,7 +37,9 @@ export const loginUser = async (credentials: LoginCredentials): Promise<AuthResp
         );
         // save token to OS secure storage
         await window.electronAPI.saveToken(response.data.token);
-
+        if ('refreshToken' in response.data && response.data.refreshToken) {
+            await window.electronAPI.saveRefreshToken(response.data.refreshToken);
+        }
         return response.data;
     } catch (error: unknown) {
         if (typeof error === 'object' && error && 'response' in error) {
@@ -47,7 +61,6 @@ export const registerUser = async (credentials: LoginCredentials): Promise<AuthR
            "/auth/register",
            credentials
         );
-        console.log(response)
         return response.data;
 
     } catch (error: unknown) {
@@ -61,12 +74,34 @@ export const registerUser = async (credentials: LoginCredentials): Promise<AuthR
 }
 
 export const tryAutoLogin = async (): Promise<string | null> => {
-    return await window.electronAPI.getToken();
+    const accessToken = await window.electronAPI.getToken();
+    if (accessToken && !isTokenExpired(accessToken)) {
+        return accessToken;
+    }
+    // Try refresh token
+    const refreshToken = await window.electronAPI.getRefreshToken?.();
+    if (refreshToken && !isTokenExpired(refreshToken)) {
+        try {
+            // Send refresh token in the Authorization header, not in the body
+            const response = await api.post("/auth/refresh", {}, {
+                headers: { Authorization: `Bearer ${refreshToken}` },
+            });
+            const { token: newAccessToken, refreshToken: newRefreshToken } = response.data;
+            await window.electronAPI.saveToken(newAccessToken);
+            if (newRefreshToken) {
+                await window.electronAPI.saveRefreshToken(newRefreshToken);
+            }
+            return newAccessToken;
+        } catch (err) {
+            // Refresh failed, treat as logged out
+            return null;
+        }
+    }
+    return null;
 }
 
 
 export const logoutUser = async () => {
     localStorage.removeItem("user");
     await window.electronAPI.deleteToken();
-    console.log("Token deletion einvodke from front")
 }

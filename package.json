@@ -1,0 +1,12 @@
+{
+  "name": "codecriticai-root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && uv run -- python -m gunicorn -w 2 --reload -b '0.0.0.0:8000' -t 600 'app:create_app()'",
+    "frontend": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

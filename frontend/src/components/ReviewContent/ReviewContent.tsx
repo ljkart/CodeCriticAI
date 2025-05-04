@@ -5,6 +5,7 @@ import {
   vscDarkPlus,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getReviewByFilenameAndVersion } from "@/services/reviewService";
+import { FiCopy, FiCheck } from "react-icons/fi";
 
 interface ReviewContentProps {
   selectedFile: string | null;
@@ -30,6 +31,7 @@ export const ReviewContent = ({
 }: ReviewContentProps) => {
   const [activeTab, setActiveTab] = useState<"review" | "refactored">("review");
   const [reviewData, setReviewData] = useState<ReviewData | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const fetchReview = async () => {
@@ -40,7 +42,6 @@ export const ReviewContent = ({
           selectedFile,
           Number(selectedVersion)
         );
-        console.log(response);
         const data = await response;
         setReviewData(data);
       } catch (error) {
@@ -96,7 +97,30 @@ export const ReviewContent = ({
           </div>
         ) : (
           <div className="refactored-code">
-            <div className="code-container">
+            <div className="code-container" style={{ position: 'relative' }}>
+              <button
+                className="copy-btn"
+                style={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 10,
+                  zIndex: 2,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#888',
+                  fontSize: 20,
+                  padding: 4,
+                }}
+                onClick={async () => {
+                  await navigator.clipboard.writeText(reviewData.refactored_code);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1200);
+                }}
+                title="Copy refactored code"
+              >
+                {copied ? <FiCheck color="#4caf50" /> : <FiCopy />}
+              </button>
               <SyntaxHighlighter
                 language={reviewData.language.toLowerCase()}
                 style={vscDarkPlus}

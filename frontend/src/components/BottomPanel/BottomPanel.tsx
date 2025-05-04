@@ -66,7 +66,6 @@ const BottomPanel = ({
   };
 
   useEffect(() => {
-    console.log(filePath);
   }, [filePath]);
 
   return (

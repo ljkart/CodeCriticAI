@@ -9,7 +9,6 @@ export const getFileHistories = async () => {
                 headers : {Authorization: `Bearer ${token}`}
             }
         )
-        console.log(reviews)
         return reviews.data
 
     } catch (error: unknown) {
@@ -71,7 +70,6 @@ export const removeReviewByFilenameVersion = async (filename: string, version: n
 
 export const doFileReview = async (filepath: string) => {
     const token = await window.electronAPI.getToken();
-    console.log("review started .... fronytern")
     try {
         const fileData = await window.electronAPI.readFileStream(filepath);
         const fileBlob = new Blob([new Uint8Array(fileData.data)], {

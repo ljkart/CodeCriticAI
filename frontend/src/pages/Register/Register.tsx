@@ -27,8 +27,6 @@ const Register = () => {
     try {
       const result = await registerUser({ username, password });
       setSuccessMessage("Registeration Successful");
-      console.log("successfully registered");
-      console.log(result);
     } catch (error: unknown) {
       if (typeof error === 'object' && error && 'message' in error) {
         setErrorMessage((error as { message: string }).message);
