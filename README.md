@@ -15,13 +15,9 @@ CodeCriticAI is an agentic, AI-powered code review desktop application. It provi
 - **frontend/**: Electron + React + Vite desktop client
 - **backend/**: Flask API server with AI code review logic
 
-## Screenshots / Demo
+## Demo
 
-![Screenshot](./docs/Screenshot.png)
-
-<!-- Or embed a demo video: -->
-
-[Demo Video](./docs/CodeCriticAI_Demo.mp4)
+https://github.com/user-attachments/assets/3bce2cff-1716-44c3-a68e-3343131e10ba
 
 ## Quick Start
 
